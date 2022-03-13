@@ -1,5 +1,5 @@
 TARGET:=wavtone
-SRCS:=wavtone.c
+SRCS:=main.c $(TARGET).o
 OBJS:=$(SRCS:.c=.o)
 
 CFLAGS:= -O0
