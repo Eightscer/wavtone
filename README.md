@@ -26,3 +26,8 @@ The output file will be named `output.wav`. If running the demo, the file will b
 ### Purpose ###
 
 This is a simple program meant as an exercise of understanding file formats, file operations, and version control. At the moment, it is not intended to serve any serious purpose or application.
+
+### Current Issues ###
+
+- Output WAV file is unrecognizable to some applications (e.g. Audacity, which will view it as a blank WAV file)
+- All but sine waveforms are inaccurate in that the output tone will be at a slightly lower frequency than specified from the user
