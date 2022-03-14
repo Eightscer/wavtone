@@ -42,6 +42,9 @@ int main(int argc, char **argv){
 		case 1:
 			generate_square(fp, &hdr, seconds, frequency, 0.5);
 			break;
+		case 2:
+			generate_sawtooth(fp, &hdr, seconds, frequency);
+			break;
 		default:
 			return 1;
 	}
@@ -103,6 +106,10 @@ int parse_args(int argc, char **argv){
 			}
 			else if(!strcmp(argv[i+1], "square")){
 				waveform = 1;
+				i++;
+			}
+			else if(!strcmp(argv[i+1], "sawtooth")){
+				waveform = 2;
 				i++;
 			}
 			else{

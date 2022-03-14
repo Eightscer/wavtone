@@ -63,6 +63,10 @@ void generate_square(
 	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq, double duty
 );
 
+void generate_sawtooth(
+	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq
+);
+
 int demo();
 
 #endif

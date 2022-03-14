@@ -42,8 +42,8 @@ pcm_wav_header gen_pcm_wav_header(
 }
 
 void update_pcm_wav_size(pcm_wav_header *hdr, uint32_t size){
-	hdr->subchunk_2_size += size;
-	hdr->chunk_size += size;
+	hdr->subchunk_2_size += size * hdr->block_align;
+	hdr->chunk_size += size * hdr->block_align;
 }
 
 void generate_sine(
@@ -83,6 +83,25 @@ void generate_square(
 		else
 			x++;
 			
+		fwrite(&sample, sizeof(sample), 1, fp);
+	}
+	update_pcm_wav_size(hdr, num_samples);
+}
+
+void generate_sawtooth(
+	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq
+){
+	printf("Generating %u Hz sawtooth wave for %f seconds\n", freq, sec);
+	uint32_t num_samples = (uint32_t)(sec * (double)(hdr->sample_rate));
+	double dy = 65535.0 / (hdr->sample_rate / (double)freq);
+	uint32_t i = 0;
+	int16_t sample = 0;
+	double x = -32767;
+	for(; i < num_samples; i++){
+		sample = (int16_t)x;
+		x += dy;
+		if(x > 32767)
+			x = -32767;
 		fwrite(&sample, sizeof(sample), 1, fp);
 	}
 	update_pcm_wav_size(hdr, num_samples);
