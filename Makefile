@@ -17,4 +17,4 @@ $(TARGET): $(OBJS)
 	gcc $(CFLAGS) -c $<
 
 clean:
-	rm -rf $(TARGET) $(OBJS)
+	rm -rf $(TARGET) $(OBJS) test.wav

@@ -46,13 +46,43 @@ void update_pcm_wav_size(pcm_wav_header *hdr, uint32_t size){
 	hdr->chunk_size += size;
 }
 
-void generate_sine(FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq){
+void generate_sine(
+	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq
+){
 	printf("Generating %u Hz sine wave for %f seconds\n", freq, sec);
 	uint32_t num_samples = (uint32_t)(sec * (double)(hdr->sample_rate));
 	double dx = ((double)(freq) / (hdr->sample_rate)) * M_PI;
 	uint32_t i = 0;
+	int16_t sample = 0;
 	for(; i < num_samples; i++){
-		int16_t sample = (int16_t)(32767*sin(dx*i));
+		sample = (int16_t)(32767*sin(dx*i));
+		fwrite(&sample, sizeof(sample), 1, fp);
+	}
+	update_pcm_wav_size(hdr, num_samples);
+}
+
+void generate_square(
+	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq, double duty
+){
+	printf("Generating %u Hz square wave with %f duty cycle for %f seconds\n",
+		freq, duty, sec);
+	uint32_t num_samples = (uint32_t)(sec * (double)(hdr->sample_rate));
+	double max = (double)(hdr->sample_rate) / (double)(freq);
+	double high = max * duty;
+	double x = 0.0;
+	uint32_t i = 0;
+	int16_t sample = 0;
+	for(; i < num_samples; i++){
+		if(x < high)
+			sample = -32767;
+		else
+			sample = 32767;
+
+		if(x > max)
+			x = 0;
+		else
+			x++;
+			
 		fwrite(&sample, sizeof(sample), 1, fp);
 	}
 	update_pcm_wav_size(hdr, num_samples);
@@ -69,7 +99,8 @@ int demo(){
 	fp = fopen("test.wav", "w");
 	pcm_wav_header hdr = gen_pcm_wav_header(1, 44100, 16);
 	fwrite(&hdr, sizeof(hdr), 1, fp);
-	generate_sine(fp, &hdr, 5.0, 440);
+	//generate_sine(fp, &hdr, 5.0, 440);
+	generate_square(fp, &hdr, 5.0, 440, 0.5);
 	printf("Demo file created as test.wav\n");
 	print_pcm_wave_header(&hdr);
 	fclose(fp);

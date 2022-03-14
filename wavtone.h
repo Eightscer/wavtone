@@ -43,15 +43,25 @@ typedef struct pcm_wav_header {
 	// Remainder of the file is sound data
 } pcm_wav_header;
 
-void print_pcm_wave_header(struct pcm_wav_header* hdr);
+void print_pcm_wave_header(
+	struct pcm_wav_header* hdr
+);
 
 pcm_wav_header gen_pcm_wav_header(
 	uint16_t channels, uint32_t rate, uint16_t depth
 );
 
-void update_pcm_wav_size(pcm_wav_header *hdr, uint32_t size);
+void update_pcm_wav_size(
+	pcm_wav_header *hdr, uint32_t size
+);
 
-void generate_sine(FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq);
+void generate_sine(
+	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq
+);
+
+void generate_square(
+	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq, double duty
+);
 
 int demo();
 
