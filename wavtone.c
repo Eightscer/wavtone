@@ -51,7 +51,7 @@ void generate_sine(
 ){
 	printf("Generating %u Hz sine wave for %f seconds\n", freq, sec);
 	uint32_t num_samples = (uint32_t)(sec * (double)(hdr->sample_rate));
-	double dx = ((double)(freq) / (hdr->sample_rate)) * M_PI;
+	double dx = (((double)(freq) / (hdr->sample_rate)) * M_PI) * 2;
 	uint32_t i = 0;
 	int16_t sample = 0;
 	for(; i < num_samples; i++){
@@ -99,8 +99,8 @@ int demo(){
 	fp = fopen("test.wav", "w");
 	pcm_wav_header hdr = gen_pcm_wav_header(1, 44100, 16);
 	fwrite(&hdr, sizeof(hdr), 1, fp);
-	//generate_sine(fp, &hdr, 5.0, 440);
-	generate_square(fp, &hdr, 5.0, 440, 0.5);
+	generate_sine(fp, &hdr, 5.0, 440);
+	//generate_square(fp, &hdr, 5.0, 440, 0.5);
 	printf("Demo file created as test.wav\n");
 	print_pcm_wave_header(&hdr);
 	fclose(fp);
