@@ -7,7 +7,7 @@ void print_usage(char **argv);
 int parse_args(int argc, char **argv);
 
 double seconds = 5;
-int waveform = 0;
+int wave = 0;
 uint32_t frequency = 440;
 int make_demo = 0;
 
@@ -35,16 +35,18 @@ int main(int argc, char **argv){
 	pcm_wav_header hdr = gen_pcm_wav_header(1, 44100, 16);
 	fwrite(&hdr, sizeof(hdr), 1, fp);
 
-	switch(waveform){
-		case 0:
+	switch(wave){
+		case SINE:
 			generate_sine(fp, &hdr, seconds, frequency);
 			break;
-		case 1:
+		case SQUARE:
 			generate_square(fp, &hdr, seconds, frequency, 0.5);
 			break;
-		case 2:
+		case SAWTOOTH:
 			generate_sawtooth(fp, &hdr, seconds, frequency);
 			break;
+		case TRIANGLE:
+			generate_triangle(fp, &hdr, seconds, frequency);
 		default:
 			return 1;
 	}
@@ -101,15 +103,19 @@ int parse_args(int argc, char **argv){
 				return 1;
 			}
 			if(!strcmp(argv[i+1], "sine")){
-				waveform = 0;
+				wave = SINE;
 				i++;
 			}
 			else if(!strcmp(argv[i+1], "square")){
-				waveform = 1;
+				wave = SQUARE;
 				i++;
 			}
 			else if(!strcmp(argv[i+1], "sawtooth")){
-				waveform = 2;
+				wave = SAWTOOTH;
+				i++;
+			}
+			else if(!strcmp(argv[i+1], "triangle")){
+				wave = TRIANGLE;
 				i++;
 			}
 			else{

@@ -107,6 +107,31 @@ void generate_sawtooth(
 	update_pcm_wav_size(hdr, num_samples);
 }
 
+void generate_triangle(
+	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq
+){
+	printf("Generating %u Hz triangle wave for %f seconds\n", freq, sec);
+	uint32_t num_samples = (uint32_t)(sec * (double)(hdr->sample_rate));
+	double dy = (65535.0 / (hdr->sample_rate / (double)freq)) * 2;
+	uint32_t i = 0;
+	int16_t sample = 0;
+	double x = -32767;
+	for(; i < num_samples; i++){
+		sample = (int16_t)x;
+		x += dy;
+		if(x > 32767){
+			x = 32767;
+			dy *= -1;
+		}
+		if(x < -32767){
+			x = -32767;
+			dy *= -1;	
+		}
+		fwrite(&sample, sizeof(sample), 1, fp);
+	}
+	update_pcm_wav_size(hdr, num_samples);
+}
+
 int demo(){
 	FILE *fp = fopen("test.wav", "r");
 

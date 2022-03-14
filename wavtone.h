@@ -20,6 +20,13 @@
 #define PCM				0x01		// PCM format indicator
 #define PCM_SB1_SIZE	16			
 
+typedef enum {
+	SINE,
+	SQUARE,
+	SAWTOOTH,
+	TRIANGLE
+} waveform;
+
 typedef struct pcm_wav_header {
 	// RIFF chunk descriptor
 	uint32_t chunk_id;			// "RIFF" in ASCII (big-endian)
@@ -64,6 +71,10 @@ void generate_square(
 );
 
 void generate_sawtooth(
+	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq
+);
+
+void generate_triangle(
 	FILE *fp, pcm_wav_header *hdr, double sec, uint32_t freq
 );
 
