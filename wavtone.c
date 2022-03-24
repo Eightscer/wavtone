@@ -41,9 +41,23 @@ pcm_wav_header gen_pcm_wav_header(
 	return hdr;
 }
 
+void regen_header(
+	FILE *fp, pcm_wav_header *hdr
+){
+	long int curr_pos = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+	//printf("sizeof(pcm_wav_header): %zu\n", sizeof(pcm_wav_header));
+	fwrite(hdr, sizeof(pcm_wav_header), 1, fp);
+	fseek(fp, curr_pos, SEEK_SET);
+}
+
 void update_pcm_wav_size(pcm_wav_header *hdr, uint32_t size){
+	//printf("sb2size: %d    size: %d    * ba: %d\n", 
+	//	hdr->subchunk_2_size, size, hdr->block_align);
 	hdr->subchunk_2_size += size * hdr->block_align;
 	hdr->chunk_size += size * hdr->block_align;
+	//printf("new sb2size: %d    chunk_size: %d\n", 
+	//	hdr->subchunk_2_size, hdr->chunk_size);
 }
 
 void generate_sine(
@@ -59,6 +73,7 @@ void generate_sine(
 		fwrite(&sample, sizeof(sample), 1, fp);
 	}
 	update_pcm_wav_size(hdr, num_samples);
+	regen_header(fp, hdr);
 }
 
 void generate_square(
@@ -86,6 +101,7 @@ void generate_square(
 		fwrite(&sample, sizeof(sample), 1, fp);
 	}
 	update_pcm_wav_size(hdr, num_samples);
+	regen_header(fp, hdr);
 }
 
 void generate_sawtooth(
@@ -105,6 +121,7 @@ void generate_sawtooth(
 		fwrite(&sample, sizeof(sample), 1, fp);
 	}
 	update_pcm_wav_size(hdr, num_samples);
+	regen_header(fp, hdr);
 }
 
 void generate_triangle(
@@ -130,6 +147,7 @@ void generate_triangle(
 		fwrite(&sample, sizeof(sample), 1, fp);
 	}
 	update_pcm_wav_size(hdr, num_samples);
+	regen_header(fp, hdr);
 }
 
 int demo(){
@@ -146,7 +164,11 @@ int demo(){
 	generate_sine(fp, &hdr, 5.0, 440);
 	//generate_square(fp, &hdr, 5.0, 440, 0.5);
 	printf("Demo file created as test.wav\n");
-	print_pcm_wave_header(&hdr);
+	fclose(fp);
+	fopen("test.wav", "r");
+	pcm_wav_header r;
+	fread(&r, sizeof(r), 1, fp);
+	print_pcm_wave_header(&r);
 	fclose(fp);
 
 	return 0;
