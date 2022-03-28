@@ -29,5 +29,4 @@ This is a simple program meant as an exercise of understanding file formats, fil
 
 ### Current Issues ###
 
-- Output WAV file is unrecognizable to some applications (e.g. Audacity, which will view it as a blank WAV file)
 - All but sine waveforms are inaccurate in that the output tone will be at a slightly lower frequency than specified from the user
